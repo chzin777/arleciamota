@@ -532,3 +532,84 @@
     gap: 4px;
   }
 }
+
+/* ------------------------------------------------------------
+   Celular: a tela de marcação é toda dedo
+
+   O calendário é o pior caso — sete colunas dentro de um cartão
+   com margem dos dois lados. Num aparelho de 320px cada dia sobra
+   com 30px de lado, menor que a ponta do polegar. Aqui o cartão
+   afina, a folga entre os dias diminui, e cada dia ganha altura
+   mínima mesmo que fique um pouco mais alto que largo.
+   ------------------------------------------------------------ */
+
+@media (max-width: 620px) {
+  .ag-caixa {
+    padding: 18px 16px 24px;
+  }
+  .cal-dia {
+    aspect-ratio: auto;
+    min-height: 44px;
+  }
+  .ag-hora {
+    min-height: 46px;
+  }
+  .ag-passos button {
+    min-height: 44px;
+    padding: 10px 14px;
+  }
+  .ag-voltar {
+    min-height: 44px;
+    align-items: center;
+  }
+  .ag-servico {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 380px) {
+  .ag-caixa {
+    padding: 16px 12px 22px;
+  }
+  .cal-semana,
+  .cal-grade {
+    gap: 3px;
+  }
+  .cal-dia {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 620px) {
+  /* A trilha de passos vira uma faixa que corre no dedo: quebrada em
+     duas linhas ela empurra o conteúdo da etapa para fora da tela. */
+  .ag-passos {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+    margin-left: -12px;
+    margin-right: -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .ag-passos::-webkit-scrollbar {
+    display: none;
+  }
+  .ag-passos button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}
+
+/* Tablet também é dedo, e ali a largura não denuncia. */
+@media (hover: none) and (pointer: coarse) {
+  .ag-voltar,
+  .ag-passos button {
+    min-height: 44px;
+  }
+  .cal-dia,
+  .ag-hora {
+    min-height: 44px;
+  }
+}

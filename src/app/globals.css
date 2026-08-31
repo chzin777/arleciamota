@@ -77,6 +77,18 @@
 
 html {
   scroll-behavior: auto;
+  /* O iPhone em paisagem aumenta a fonte sozinho; com tipografia em
+     clamp isso quebra o ritmo das duas colunas. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* O retângulo cinza que o Android pinta em cima de todo toque: a
+   página já tem estado de foco e de ativo próprios. */
+a,
+button,
+[role='button'] {
+  -webkit-tap-highlight-color: transparent;
 }
 
 html.travado {
@@ -547,31 +559,48 @@ button {
   height: 20px;
 }
 
+/* Fechada ela sobe inteira para fora da tela. O `overflow` não é
+   detalhe: sem ele o conteúdo passa da caixa de 100svh, o
+   `translateY(-100%)` desloca só a altura da caixa, e a sobra —
+   o botão de agendar e o rodapezinho — fica pintada sobre o topo
+   de todas as telas. A `visibility` garante o mesmo para quem
+   navega por teclado ou leitor. */
 .nav-gaveta {
   position: fixed;
   inset: 0;
   z-index: 80;
   background: var(--cacau);
-  padding: calc(var(--h-tarja) + 90px) var(--pad) 40px;
+  padding: calc(var(--h-tarja) + 84px) var(--pad)
+    calc(32px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  visibility: hidden;
   transform: translateY(-100%);
-  transition: transform 0.7s var(--ease);
+  transition:
+    transform 0.7s var(--ease),
+    visibility 0s linear 0.7s;
 }
 .nav-gaveta[data-aberta='1'] {
   transform: translateY(0);
+  visibility: visible;
+  transition:
+    transform 0.7s var(--ease),
+    visibility 0s;
 }
 .nav-gaveta a {
   font-family: var(--display);
   font-weight: 500;
-  font-size: clamp(30px, 8vw, 46px);
+  font-size: clamp(26px, 7.4vw, 44px);
   letter-spacing: -0.03em;
   padding: 10px 0;
   border-bottom: 1px solid var(--linha);
 }
 .nav-gaveta .ng-fechar {
-  position: absolute;
+  position: fixed;
   top: calc(var(--h-tarja) + 22px);
   right: var(--pad);
   width: 48px;
@@ -607,6 +636,28 @@ button {
   .nav-menu-botao {
     display: inline-flex;
     margin-left: auto;
+  }
+}
+
+/* No celular a barra flutua sobre o texto das seções, e a pastilha
+   com o nome por extenso cobre a primeira linha de todo título. Aqui
+   ela vira só o símbolo, do mesmo tamanho do botão de menu: a marca
+   continua na tela e o título volta a ser legível por baixo. */
+@media (max-width: 700px) {
+  .nav-marca {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
+    gap: 0;
+  }
+  .nav-marca span {
+    display: none;
+  }
+  .nav-marca svg {
+    width: 22px;
+    height: 14px;
   }
 }
 
@@ -2350,5 +2401,66 @@ button {
 
   .rd-grade {
     gap: 30px;
+  }
+}
+
+/* ------------------------------------------------------------
+   Alvo de toque
+
+   No dedo o mínimo confortável é ~44px de altura. Vários links da
+   página nascem com a altura da linha de texto (17px): dá para
+   acertar com o mouse, não com o polegar. Aqui eles ganham corpo
+   sem mudar de aparência — o espaço extra é area de clique, não
+   moldura.
+   ------------------------------------------------------------ */
+
+@media (hover: none) and (pointer: coarse) {
+  .rd-col ul {
+    gap: 2px;
+  }
+  .rd-col a,
+  .rd-mapa {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .rd-col li {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+  }
+
+  .nav-gaveta a {
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+  }
+  .nav-gaveta .ng-rodape {
+    padding-top: 24px;
+  }
+
+  .tarja-topo a {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+  }
+
+  /* O símbolo do Instagram e os links da chamada final também vivem
+     do polegar. */
+  .dp-cabeca a,
+  .av-lista a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* A barra do topo respeita o recorte da tela em paisagem. */
+@supports (padding: env(safe-area-inset-left)) {
+  .tarja-topo,
+  .rodape,
+  .cta {
+    padding-left: max(var(--pad), env(safe-area-inset-left));
+    padding-right: max(var(--pad), env(safe-area-inset-right));
   }
 }

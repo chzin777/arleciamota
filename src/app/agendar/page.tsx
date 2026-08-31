@@ -71,6 +71,15 @@ export default function Agendar() {
     topo.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [passo]);
 
+  /* No celular a trilha de passos não cabe na largura e vira uma faixa
+     que corre no dedo. Sem isto, o passo atual fica cortado na borda
+     direita e a pessoa não vê em que etapa está. */
+  const trilha = useRef<HTMLOListElement>(null);
+  useEffect(() => {
+    const atual = trilha.current?.children[passo]?.firstElementChild;
+    atual?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, [passo]);
+
   function escolherServico(s: Servico) {
     setServico(s);
     setHora(null);
@@ -171,7 +180,7 @@ export default function Agendar() {
 
         {/* A trilha de passos. Passo já resolvido volta a ser clicável;
             passo à frente fica morto, porque ele depende do de trás. */}
-        <ol className="ag-passos">
+        <ol className="ag-passos" ref={trilha}>
           {PASSOS.map((p, i) => (
             <li key={p}>
               <button
