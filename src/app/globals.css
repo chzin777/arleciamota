@@ -1,26 +1,2354 @@
-@import "tailwindcss";
+/* ============================================================
+   Arlecia Mota PMU — landing
+
+   A cor veio do trabalho: pigmento de sobrancelha e de lábio vive
+   entre o marrom quente e o terracota. Por isso a página é marrom
+   de corpo, e não branca com um detalhe nude — o inverso seria
+   descrever o trabalho pelo que ele não tem.
+
+   Um acento só, o nude aquecido. Nada de segunda cor de apoio: com
+   fotos de pele dentro, três cores viram cinco e a página começa a
+   competir com o rosto da cliente.
+   ============================================================ */
+
+@import 'tailwindcss';
+@import './agendar.css';
+
+@theme {
+  --color-cacau: #170f0d;
+  --color-terra: #3a231c;
+  --color-nude: #c98a67;
+  --color-areia: #f4ede7;
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+
+  /* escuros — o fundo é marrom, não preto. Preto puro sob foto de
+     pele bem iluminada faz buraco; o marrom muito escuro segura. */
+  --cacau: #170f0d;
+  --cacau-2: #211613;
+  --terra: #3a231c;
+
+  /* o acento, tirado do pigmento */
+  --nude: #c98a67;
+  --nude-alto: #e6b394;
+
+  /* claros */
+  --areia: #f4ede7;
+  --areia-2: #e8ded5;
+
+  --sobre-escuro: #f7f1ec;
+  --sobre-escuro-fraco: rgba(247, 241, 236, 0.74);
+  --sobre-escuro-tenue: rgba(247, 241, 236, 0.46);
+
+  --sobre-claro: #1a100c;
+  --sobre-claro-fraco: rgba(26, 16, 12, 0.72);
+  --sobre-claro-tenue: rgba(26, 16, 12, 0.44);
+
+  /* o acento não sobrevive em fundo claro: sobre areia ele some.
+     Esta é a mesma cor com o valor derrubado. */
+  --nude-escuro: #9a5333;
+
+  --linha: rgba(247, 241, 236, 0.14);
+  --linha-forte: rgba(247, 241, 236, 0.28);
+
+  --display: var(--fonte-display), ui-serif, Georgia, serif;
+  --sans: var(--fonte-corpo), ui-sans-serif, system-ui, sans-serif;
+  --mono: var(--fonte-mono), ui-monospace, 'SF Mono', monospace;
+
+  --r: 18px;
+  --r-sm: 10px;
+  --r-pill: 100px;
+
+  /* O respiro lateral considera a área segura do aparelho: no iPhone
+     em paisagem o notch come a borda esquerda. */
+  --pad: max(clamp(20px, 5.5vw, 96px), env(safe-area-inset-left));
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --spring: cubic-bezier(0.22, 1.4, 0.36, 1);
+  --h-tarja: 34px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: auto;
+}
+
+html.travado {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+  touch-action: none;
+  overscroll-behavior: none;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--cacau);
+  color: var(--sobre-escuro);
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* O grão. Uma malha fina por cima de tudo, opacidade baixíssima:
+   sem ela os degradês marrons mostram bandas em tela grande. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.38;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.34'/%3E%3C/svg%3E");
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--nude);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--nude);
+  color: #1a100c;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 999;
+  background: var(--nude);
+  color: #1a100c;
+  padding: 12px 20px;
+  font-weight: 700;
+  border-radius: 0 0 var(--r-sm) 0;
+}
+.skip:focus {
+  left: 0;
+}
+
+/* ------------------------------------------------------------
+   Tipografia
+   ------------------------------------------------------------ */
+
+.display {
+  font-family: var(--display);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.028em;
+  font-variation-settings: 'SOFT' 30, 'WONK' 1, 'opsz' 96;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.rotulo {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--nude);
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.rotulo::before {
+  content: '';
+  width: 22px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+.claro .rotulo {
+  color: var(--nude-escuro);
+}
+
+.lead {
+  font-size: clamp(17px, 1.35vw, 21px);
+  line-height: 1.55;
+  color: var(--sobre-escuro-fraco);
+  max-width: 58ch;
+}
+.claro .lead {
+  color: var(--sobre-claro-fraco);
+}
+
+.secao {
+  position: relative;
+  padding: clamp(76px, 8vw, 124px) var(--pad);
+}
+
+.secao-titulo {
+  font-size: clamp(34px, 4.4vw, 68px);
+}
+
+.claro {
+  background: var(--areia);
+  color: var(--sobre-claro);
+}
+
+.container {
+  max-width: 1560px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ------------------------------------------------------------
+   A vaga de foto.
+
+   Enquanto as imagens do Instagram não são exportadas, cada foto é
+   uma superfície de pigmento com o símbolo no meio. Ela precisa
+   parecer INTENCIONAL — e não imagem quebrada —, então tem cor de
+   marca, textura e legenda dizendo o que entra ali.
+   ------------------------------------------------------------ */
+
+.vaga {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  padding: 18px;
+  text-align: center;
+  background:
+    radial-gradient(120% 100% at 30% 0%, rgba(201, 138, 103, 0.28), transparent 62%),
+    linear-gradient(160deg, var(--terra), var(--cacau-2) 76%);
+}
+.vaga svg {
+  width: 34px;
+  height: 21px;
+  color: var(--nude);
+  opacity: 0.5;
+}
+.vaga i {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--sobre-escuro-tenue);
+  max-width: 22ch;
+}
+.claro .vaga i {
+  color: var(--sobre-escuro-tenue);
+}
+
+/* ------------------------------------------------------------
+   Botões
+   ------------------------------------------------------------ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 28px;
+  border-radius: var(--r-pill);
+  background: var(--nude);
+  color: #1a100c;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  border: 1px solid var(--nude);
+  cursor: pointer;
+  transition:
+    transform 0.45s var(--spring),
+    background 0.3s ease,
+    box-shadow 0.45s var(--ease);
+  box-shadow: 0 0 0 0 rgba(201, 138, 103, 0.4);
+}
+.btn:hover {
+  transform: translateY(-3px);
+  background: var(--nude-alto);
+  border-color: var(--nude-alto);
+  box-shadow: 0 14px 34px -12px rgba(201, 138, 103, 0.7);
+}
+.btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-vazado {
+  background: transparent;
+  color: var(--sobre-escuro);
+  border-color: var(--linha-forte);
+  box-shadow: none;
+}
+.btn-vazado:hover {
+  background: rgba(247, 241, 236, 0.08);
+  border-color: var(--sobre-escuro);
+  color: var(--sobre-escuro);
+  box-shadow: none;
+}
+.claro .btn-vazado {
+  color: var(--sobre-claro);
+  border-color: rgba(26, 16, 12, 0.24);
+}
+.claro .btn-vazado:hover {
+  background: rgba(26, 16, 12, 0.06);
+  border-color: var(--sobre-claro);
+  color: var(--sobre-claro);
+}
+
+.btn-escuro {
+  background: var(--cacau);
+  color: var(--sobre-escuro);
+  border-color: var(--cacau);
+}
+.btn-escuro:hover {
+  background: var(--terra);
+  border-color: var(--terra);
+  color: var(--sobre-escuro);
+  box-shadow: 0 14px 34px -14px rgba(26, 16, 12, 0.6);
+}
+
+/* ------------------------------------------------------------
+   A trilha — o elemento assinatura.
+
+   Uma linha que atravessa a página inteira, do herói ao rodapé, e
+   vai sendo desenhada conforme a pessoa rola. É o movimento como
+   desenho: um traço só, contínuo, como o fio que ela puxa na pele.
+   ------------------------------------------------------------ */
+
+.trilha {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* Acima do conteúdo, não atrás. Atrás ela sumiria a cada seção com
+     fundo próprio, e o traço só significa alguma coisa se for o mesmo
+     traço do começo ao fim. */
+  z-index: 6;
+  pointer-events: none;
+  overflow: visible;
+}
+.trilha path {
+  fill: none;
+  stroke: var(--nude);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.5;
+}
+.trilha .trilha-eco {
+  stroke: var(--nude);
+  stroke-width: 5;
+  opacity: 0.07;
+}
+
+@media (max-width: 900px) {
+  .trilha {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------
+   Tarja do topo + navegação
+   ------------------------------------------------------------ */
+
+.tarja-topo {
+  position: relative;
+  z-index: 60;
+  height: var(--h-tarja);
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 0 var(--pad);
+  background: var(--terra);
+  border-bottom: 1px solid var(--linha);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-fraco);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.tarja-topo b {
+  color: var(--nude);
+  font-weight: 500;
+}
+.tarja-topo .tt-frase {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--sobre-escuro);
+}
+.tarja-topo .tt-frase svg {
+  width: 14px;
+  height: 9px;
+  color: var(--nude);
+}
+.tarja-topo a:hover {
+  color: var(--nude);
+}
+.tarja-topo .tt-fim {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 22px;
+}
+@media (max-width: 800px) {
+  .tarja-topo .tt-esconde {
+    display: none;
+  }
+}
+/* No celular sobra tarja para uma coisa só, e a frase vale mais que
+   a cidade: a cidade está no menu e no rodapé. */
+@media (max-width: 640px) {
+  .tarja-topo .tt-fim {
+    display: none;
+  }
+}
+
+.nav {
+  position: fixed;
+  top: calc(var(--h-tarja) + 14px);
+  left: var(--pad);
+  right: var(--pad);
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  transition: top 0.5s var(--ease);
+}
+.nav[data-preso='1'] {
+  top: 14px;
+}
+
+.nav-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 20px 11px 15px;
+  border-radius: var(--r-pill);
+  background: rgba(23, 15, 13, 0.62);
+  border: 1px solid var(--linha);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: var(--sobre-escuro);
+  transition: border-color 0.4s var(--ease);
+}
+.nav-marca:hover {
+  border-color: var(--nude);
+}
+.nav-marca svg {
+  width: 24px;
+  height: 15px;
+  color: var(--nude);
+}
+.nav-marca i {
+  font-style: italic;
+  font-weight: 400;
+  opacity: 0.72;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 auto;
+  padding: 7px;
+  border-radius: var(--r-pill);
+  background: rgba(23, 15, 13, 0.62);
+  border: 1px solid var(--linha);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+.nav-menu a {
+  position: relative;
+  padding: 9px 17px;
+  border-radius: var(--r-pill);
+  font-size: 14.5px;
+  color: var(--sobre-escuro-fraco);
+  transition:
+    color 0.3s ease,
+    background 0.3s ease;
+}
+.nav-menu a:hover {
+  color: var(--sobre-escuro);
+  background: rgba(247, 241, 236, 0.08);
+}
+
+/* A seção que está sendo lida acende na barra. O fundo é o acento a
+   baixa opacidade, e não o nude cheio: cheio, ele viraria um segundo
+   botão ao lado do de agendar, e a barra passaria a ter duas
+   chamadas disputando o clique. */
+.nav-menu a[data-ativo='1'] {
+  color: var(--nude);
+  background: rgba(201, 138, 103, 0.16);
+}
+.nav-menu a[data-ativo='1']:hover {
+  color: var(--nude);
+  background: rgba(201, 138, 103, 0.22);
+}
+
+.nav-gaveta a[data-ativo='1'] {
+  color: var(--nude);
+}
+
+/* Nude claro, não o nude da marca: a barra flutua também sobre a
+   chamada final, que é nude cheia, e botão nude sobre nude some. */
+.nav-cta {
+  padding: 13px 24px;
+  font-size: 15px;
+  background: var(--nude-alto);
+  border-color: var(--nude-alto);
+}
+.nav-cta:hover {
+  background: var(--nude);
+  border-color: var(--nude);
+}
+
+.nav-menu-botao {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(23, 15, 13, 0.62);
+  border: 1px solid var(--linha);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  cursor: pointer;
+}
+.nav-menu-botao svg {
+  width: 20px;
+  height: 20px;
+}
+
+.nav-gaveta {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: var(--cacau);
+  padding: calc(var(--h-tarja) + 90px) var(--pad) 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transform: translateY(-100%);
+  transition: transform 0.7s var(--ease);
+}
+.nav-gaveta[data-aberta='1'] {
+  transform: translateY(0);
+}
+.nav-gaveta a {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(30px, 8vw, 46px);
+  letter-spacing: -0.03em;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--linha);
+}
+.nav-gaveta .ng-fechar {
+  position: absolute;
+  top: calc(var(--h-tarja) + 22px);
+  right: var(--pad);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--linha);
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.nav-gaveta .ng-fechar svg {
+  width: 22px;
+  height: 22px;
+}
+.nav-gaveta .ng-rodape {
+  margin-top: auto;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-tenue);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+@media (max-width: 1080px) {
+  .nav-menu,
+  .nav-cta {
+    display: none;
+  }
+  .nav-menu-botao {
+    display: inline-flex;
+    margin-left: auto;
+  }
+}
+
+/* ------------------------------------------------------------
+   Herói
+   ------------------------------------------------------------ */
+
+.he {
+  position: relative;
+  min-height: calc(100svh - var(--h-tarja));
+  display: grid;
+  grid-template-columns: minmax(0, 1.22fr) minmax(0, 0.78fr);
+  align-items: center;
+  gap: clamp(30px, 5vw, 80px);
+  padding: clamp(120px, 15vh, 190px) var(--pad) clamp(70px, 9vh, 120px);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* A luz do fundo. Dois halos muito abertos, um quente no canto da
+   cena e outro atrás do texto: é o que impede o marrom escuro de
+   virar uma chapa morta atrás da tipografia. */
+.he::before {
+  content: '';
+  position: absolute;
+  inset: -20% -10% auto -30%;
+  height: 130%;
+  z-index: -2;
+  background:
+    radial-gradient(60% 55% at 74% 42%, rgba(201, 138, 103, 0.3), transparent 70%),
+    radial-gradient(52% 60% at 12% 78%, rgba(58, 35, 28, 0.9), transparent 72%);
+  filter: blur(10px);
+}
+
+.he-texto {
+  position: relative;
+  z-index: 3;
+  max-width: 54rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(20px, 2.2vw, 30px);
+}
+
+.he-h1 {
+  font-size: clamp(40px, 5.2vw, 88px);
+}
+.he-h1 .he-linha {
+  display: block;
+  overflow: hidden;
+}
+.he-h1 i {
+  display: block;
+  font-style: normal;
+}
+.he-linha-destaque {
+  color: var(--nude);
+  font-style: italic;
+}
+
+.he-sub {
+  font-size: clamp(17px, 1.4vw, 21px);
+  line-height: 1.5;
+  color: var(--sobre-escuro-fraco);
+  max-width: 46ch;
+  margin: 0;
+}
+
+.he-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+/* Os quatro fatos ficam numa linha de texto corrido. Como
+   cartõezinhos flutuando eles roubavam o herói do título, que é quem
+   tem que falar primeiro. */
+.he-fatos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-tenue);
+}
+.he-fatos li {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+/* O marcador é o próprio símbolo, minúsculo. Um traço vertical entre
+   itens ficava órfão no começo da segunda linha toda vez que a lista
+   quebrava. */
+.he-fatos svg {
+  width: 14px;
+  height: 9px;
+  flex: none;
+  color: var(--nude);
+  opacity: 0.75;
+}
+
+/* ---- a cena ---- */
+
+.he-cena {
+  position: relative;
+  z-index: 2;
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  min-height: min(70vh, 640px);
+}
+
+/* O recorte da marca com a foto dentro. É o gesto central da página:
+   a pétala, do tamanho de uma pessoa, com um rosto real por dentro.
+   Nada de moldura — a forma é a moldura. */
+.he-retrato {
+  position: relative;
+  width: min(100%, 430px);
+  aspect-ratio: 4 / 5;
+  /* Um arco: topo redondo cheio, base quase reta. Recortar a foto na
+     forma da boca colocava uma boca dentro de outra boca — a marca
+     brigava com a imagem em vez de emoldurá-la. O arco é moldura, não
+     desenho: ele não disputa significado com o rosto. */
+  border-radius: 50% 50% 14px 14px / 40% 40% 3px 3px;
+  overflow: hidden;
+  background: var(--terra);
+  will-change: transform;
+}
+.he-retrato img {
+  object-fit: cover;
+  transform: scale(1.14);
+  filter: saturate(1.03) contrast(1.03);
+}
+.he-retrato::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(200deg, rgba(23, 15, 13, 0) 44%, rgba(23, 15, 13, 0.7));
+  mix-blend-mode: multiply;
+}
+
+/* Os contornos atrás, deslocados. Duas cópias da mesma forma em
+   profundidades diferentes: é o que dá volume sem sombra falsa. Eles
+   são contorno, não bloco — com fundo forte virariam uma segunda
+   forma disputando com a foto. */
+.he-eco {
+  position: absolute;
+  width: min(100%, 430px);
+  aspect-ratio: 4 / 5;
+  border-radius: 50% 50% 14px 14px / 40% 40% 3px 3px;
+  border: 1px solid rgba(201, 138, 103, 0.28);
+  background: linear-gradient(160deg, rgba(201, 138, 103, 0.14), transparent 52%);
+  opacity: 0.55;
+  will-change: transform;
+}
+.he-eco-1 {
+  transform: translate(-52px, -30px);
+}
+.he-eco-2 {
+  transform: translate(42px, 36px);
+  background: linear-gradient(340deg, rgba(201, 138, 103, 0.1), transparent 52%);
+}
+
+/* Os anéis. Três arcos concêntricos girando devagar, atrás de tudo. */
+.he-aneis {
+  position: absolute;
+  width: min(150%, 900px);
+  aspect-ratio: 1;
+  z-index: -1;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.he-aneis circle {
+  fill: none;
+  stroke: var(--nude);
+  stroke-width: 0.4;
+  opacity: 0.35;
+}
+.he-aneis .anel-tracejado {
+  stroke-dasharray: 3 7;
+  opacity: 0.6;
+}
+
+.he-legenda {
+  position: absolute;
+  right: 0;
+  bottom: 4%;
+  z-index: 4;
+  max-width: 230px;
+  padding: 15px 19px;
+  border-radius: var(--r-sm);
+  background: rgba(23, 15, 13, 0.72);
+  border: 1px solid var(--linha);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-fraco);
+}
+.he-legenda b {
+  display: block;
+  color: var(--nude);
+  font-weight: 500;
+}
+
+/* ---- as pétalas que flutuam ----
+
+   Elas moram na SEÇÃO, não na cena: atravessam a divisa entre o texto
+   e a foto, e é isso que faz o herói ler como um espaço só em vez de
+   duas metades coladas. */
+.gt-campo {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.gt {
+  position: absolute;
+  display: block;
+  will-change: transform;
+}
+.gt-forma {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--nude);
+  opacity: 0.16;
+  filter: drop-shadow(0 22px 30px rgba(10, 5, 3, 0.5));
+  animation: flutuar 7s ease-in-out infinite;
+}
+@keyframes flutuar {
+  0%,
+  100% {
+    transform: translateY(-6px) rotate(-1.5deg);
+  }
+  50% {
+    transform: translateY(8px) rotate(1.5deg);
+  }
+}
+
+/* Cada pétala tem o seu tempo. Todas no mesmo compasso lê como um
+   carrossel; defasadas, lê como coisas soltas no ar. */
+.gt-1 {
+  bottom: 6%;
+  left: 34%;
+  width: clamp(60px, 6vw, 96px);
+  rotate: 12deg;
+}
+.gt-1 .gt-forma {
+  animation-duration: 9s;
+  animation-delay: -2s;
+}
+.gt-2 {
+  top: 8%;
+  right: 30%;
+  width: clamp(64px, 6.5vw, 104px);
+  rotate: 26deg;
+}
+.gt-2 .gt-forma {
+  animation-duration: 6.4s;
+  animation-delay: -3.5s;
+}
+.gt-3 {
+  bottom: 8%;
+  right: 4%;
+  width: clamp(90px, 10vw, 160px);
+  rotate: -9deg;
+}
+.gt-3 .gt-forma {
+  animation-duration: 10s;
+  animation-delay: -1.2s;
+}
+.gt-4 {
+  top: 46%;
+  right: 1%;
+  width: clamp(52px, 5vw, 84px);
+  rotate: 40deg;
+}
+.gt-4 .gt-forma {
+  animation-duration: 8.2s;
+  animation-delay: -4.6s;
+}
+
+/* No celular sobram duas: com quatro, elas encostam no título e a
+   leitura vira caça ao texto entre objetos. */
+@media (max-width: 1080px) {
+  .gt-2,
+  .gt-4 {
+    display: none;
+  }
+  .gt-1 {
+    top: 8%;
+    bottom: auto;
+    left: -4%;
+  }
+  .gt-3 {
+    bottom: 4%;
+    right: -6%;
+  }
+}
+
+/* O selo de rolagem: círculo com a palavra correndo em volta e a seta
+   descendo no meio. O anel pulsa uma vez a cada dois segundos e meio —
+   devagar de propósito, porque o herói já tem paralaxe. */
+.he-rolar {
+  position: absolute;
+  left: var(--pad);
+  bottom: 34px;
+  z-index: 5;
+  width: 108px;
+  height: 108px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--nude);
+  transition: transform 0.6s var(--spring);
+}
+.he-rolar:hover {
+  transform: scale(1.06);
+}
+.he-rolar::before {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  border-radius: 50%;
+  background: rgba(201, 138, 103, 0.14);
+  border: 1px solid rgba(201, 138, 103, 0.42);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+/* a onda que sai do selo */
+.he-rolar::after {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--nude);
+  animation: pulso 2.6s var(--ease) infinite;
+}
+@keyframes pulso {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70%,
+  100% {
+    transform: scale(1.42);
+    opacity: 0;
+  }
+}
+
+.he-rolar-texto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: girar 14s linear infinite;
+}
+/* Uma volta só de texto. Com a frase repetida, o começo alcançava o
+   fim e as letras se montavam umas nas outras. */
+.he-rolar-texto text {
+  fill: var(--nude);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.he-rolar-seta {
+  position: relative;
+  display: grid;
+  place-items: center;
+  animation: descer 1.9s var(--ease) infinite;
+}
+@keyframes descer {
+  0%,
+  100% {
+    transform: translateY(-3px);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+@media (max-width: 1080px) {
+  .he {
+    grid-template-columns: 1fr;
+    padding-top: 130px;
+    text-align: left;
+  }
+  .he-cena {
+    min-height: 60vh;
+    order: 2;
+  }
+  .he-eco-1 {
+    transform: translate(-34px, -22px);
+  }
+  .he-eco-2 {
+    transform: translate(28px, 26px);
+  }
+  .he-legenda,
+  .he-rolar {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------
+   Esteira — a tarja que corre
+   ------------------------------------------------------------ */
+
+.esteira {
+  position: relative;
+  z-index: 5;
+  background: var(--nude);
+  color: #1a100c;
+  padding: 20px 0;
+  overflow: hidden;
+  border-top: 1px solid rgba(26, 16, 12, 0.15);
+  border-bottom: 1px solid rgba(26, 16, 12, 0.15);
+}
+.esteira-trilho {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.esteira-trilho span {
+  display: inline-flex;
+  align-items: center;
+  gap: 34px;
+  padding-right: 34px;
+  font-family: var(--display);
+  font-weight: 500;
+  font-style: italic;
+  font-size: clamp(20px, 2.4vw, 32px);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+.esteira-trilho b {
+  display: inline-flex;
+  align-items: center;
+  gap: 34px;
+  font-weight: 500;
+}
+.esteira-trilho svg {
+  width: 21px;
+  height: 13px;
+  flex: none;
+  color: #1a100c;
+  opacity: 0.5;
+}
+
+/* ------------------------------------------------------------
+   O trabalho — campo de fotos na diagonal
+   ------------------------------------------------------------ */
+
+.cm {
+  position: relative;
+  display: grid;
+  align-content: center;
+  /* UMA TELA. Este número é ESPELHADO em `ALTURA`, dentro de
+     Trabalho.tsx, que deriva dele o recuo inicial de cada coluna.
+     Mudar aqui sem mudar lá abre um vão no fim do percurso. */
+  min-height: 100svh;
+  padding: clamp(70px, 12vh, 140px) var(--pad);
+  background: var(--cacau);
+  overflow: hidden;
+}
+
+.cm-conjunto {
+  position: absolute;
+  /* O EXCESSO ESCONDE AS QUINAS DA ROTAÇÃO, e a conta é geométrica:
+     um retângulo girado 22° precisa de |w·sen| + |h·cos| em cada eixo
+     para ainda cobrir a moldura reta. */
+  top: -30%;
+  left: -35%;
+  width: 170%;
+  height: 160%;
+  display: flex;
+  justify-content: center;
+  gap: clamp(10px, 1.4vw, 22px);
+  rotate: -22deg;
+  pointer-events: none;
+}
+
+.cm-col {
+  display: grid;
+  gap: clamp(10px, 1.4vw, 22px);
+  flex: 1 1 0;
+  min-width: 0;
+  height: max-content;
+  will-change: transform;
+}
+
+.cm-quadro {
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px;
+  /* proporção fixa: sem ela as fotos de alturas diferentes fazem as
+     colunas terminarem em pontos aleatórios e o campo perde ritmo */
+  aspect-ratio: 3 / 4;
+  background: var(--terra);
+}
+.cm-quadro img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5;
+}
+/* no campo a vaga é só superfície: o símbolo repetido 45 vezes viraria
+   papel de parede e roubaria o título */
+.cm-quadro .vaga svg {
+  opacity: 0.16;
+}
+
+/* o véu que escurece o conjunto inteiro, no lugar de um brightness em
+   cada imagem */
+.cm-conjunto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(23, 15, 13, 0.46);
+  pointer-events: none;
+}
+
+/* as pontas morrem no escuro nas duas direções da diagonal */
+.cm-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 34%;
+  pointer-events: none;
+}
+.cm-fade-topo {
+  top: 0;
+  background: linear-gradient(180deg, var(--cacau), rgba(23, 15, 13, 0));
+}
+.cm-fade-base {
+  bottom: 0;
+  background: linear-gradient(0deg, var(--cacau), rgba(23, 15, 13, 0));
+}
+
+.cm-titulo {
+  position: relative;
+  display: grid;
+  gap: 20px;
+  justify-items: center;
+  text-align: center;
+  /* o texto flutua sobre o campo; o véu redondo impede que uma foto
+     clara passe por trás de uma palavra e a apague */
+  padding: clamp(30px, 5vw, 60px);
+  background: radial-gradient(
+    68% 128% at 50% 50%,
+    rgba(23, 15, 13, 0.92),
+    rgba(23, 15, 13, 0)
+  );
+}
+.cm-h2 {
+  font-size: clamp(40px, 7vw, 104px);
+  max-width: 16ch;
+}
+.cm-destaque {
+  color: var(--nude);
+  font-style: italic;
+}
+.cm-sub {
+  margin: 0;
+  max-width: 48ch;
+  font-size: clamp(16px, 1.3vw, 20px);
+  line-height: 1.55;
+  color: var(--sobre-escuro-fraco);
+}
+
+/* A faixa de números vive fora do campo: sobre as fotos em movimento
+   ela competiria com o título, e é justamente ela que sustenta o que
+   o título afirma. */
+.secao-numeros {
+  position: relative;
+  padding: 0 var(--pad) clamp(40px, 6vw, 80px);
+  background: var(--cacau);
+}
+
+.st-numeros {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  background: var(--linha);
+  border-top: 1px solid var(--linha);
+  border-bottom: 1px solid var(--linha);
+}
+.st-num {
+  background: var(--cacau);
+  padding: clamp(24px, 3vw, 42px) clamp(16px, 2vw, 30px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.st-num b {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(40px, 5.2vw, 76px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--nude);
+  font-variant-numeric: tabular-nums;
+}
+.st-num span {
+  font-size: 14.5px;
+  line-height: 1.4;
+  color: var(--sobre-escuro-tenue);
+  max-width: 22ch;
+}
+
+@media (max-width: 900px) {
+  .cm {
+    /* em telefone a seção encurta e o `ALTURA` do JSX deixa de valer —
+       mas o recuo sobrando só empurra a coluna mais para cima, que é o
+       lado seguro do erro: sobra fila, não falta. */
+    min-height: 82svh;
+  }
+  .cm-conjunto {
+    left: -45%;
+    width: 190%;
+    rotate: -18deg;
+  }
+  /* as duas últimas colunas saem da conta em vez de encolher */
+  .cm-col:nth-child(n + 4) {
+    display: none;
+  }
+  .st-numeros {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ------------------------------------------------------------
+   Técnicas — acordeão horizontal
+   ------------------------------------------------------------ */
+
+.pf-cabeca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: clamp(40px, 5vw, 70px);
+}
+.pf-cabeca h2 {
+  max-width: 14ch;
+}
+
+.pf-trilho {
+  display: flex;
+  gap: 10px;
+  height: clamp(420px, 56vh, 620px);
+}
+.pf-item {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: var(--r);
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--terra);
+  border: 1px solid var(--linha);
+  transition: flex-grow 0.85s var(--ease);
+  text-align: left;
+  padding: 0;
+}
+.pf-item[data-ativo='1'] {
+  flex-grow: 4.6;
+}
+.pf-item img {
+  object-fit: cover;
+  opacity: 0.42;
+  filter: saturate(0.55);
+  transition:
+    opacity 0.9s var(--ease),
+    filter 0.9s var(--ease),
+    transform 1.4s var(--ease);
+  transform: scale(1.06);
+}
+.pf-item[data-ativo='1'] img {
+  opacity: 0.72;
+  filter: saturate(1);
+  transform: scale(1);
+}
+.pf-item .vaga {
+  opacity: 0.6;
+  transition: opacity 0.9s var(--ease);
+}
+.pf-item[data-ativo='1'] .vaga {
+  opacity: 1;
+}
+.pf-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(23, 15, 13, 0.25) 12%, rgba(23, 15, 13, 0.92));
+}
+/* Nas fatias fechadas o título fica EM PÉ. Deitado, ele quebrava em
+   cinco linhas dentro de uma coluna de 90px e virava ruído; em pé ele
+   se lê inteiro e a fatia fechada ganha cara de lombada de livro. */
+.pf-corpo {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 2;
+  padding: clamp(20px, 2vw, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pf-item[data-ativo='0'] .pf-corpo {
+  inset: 0 auto 0 0;
+  justify-content: flex-end;
+}
+.pf-item[data-ativo='0'] .pf-tit {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  max-width: none;
+  white-space: nowrap;
+}
+.pf-item[data-ativo='0'] .pf-txt {
+  display: none;
+}
+.pf-corpo h3,
+.pf-corpo .pf-tit {
+  display: block;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(19px, 1.5vw, 27px);
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  margin: 0;
+  max-width: 14ch;
+}
+.pf-corpo p,
+.pf-corpo .pf-txt {
+  display: block;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--sobre-escuro-fraco);
+  max-width: 40ch;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.6s var(--ease) 0.12s,
+    transform 0.6s var(--ease) 0.12s;
+}
+.pf-item[data-ativo='1'] .pf-corpo p,
+.pf-item[data-ativo='1'] .pf-corpo .pf-txt {
+  opacity: 1;
+  transform: none;
+}
+.pf-marca {
+  position: absolute;
+  top: clamp(18px, 2vw, 28px);
+  left: clamp(18px, 2vw, 28px);
+  z-index: 2;
+  width: 21px;
+  height: 13px;
+  color: var(--nude);
+  opacity: 0.35;
+  transition: opacity 0.6s var(--ease);
+}
+.pf-item[data-ativo='1'] .pf-marca {
+  opacity: 1;
+}
+
+.pf-lista {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .pf-trilho {
+    display: none;
+  }
+  .pf-lista {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .pf-cartao {
+    position: relative;
+    min-height: 250px;
+    border-radius: var(--r);
+    overflow: hidden;
+    border: 1px solid var(--linha);
+    display: flex;
+    align-items: flex-end;
+  }
+  .pf-cartao img {
+    object-fit: cover;
+    opacity: 0.55;
+  }
+  .pf-cartao::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(23, 15, 13, 0.2), rgba(23, 15, 13, 0.92));
+  }
+  .pf-cartao .pf-corpo {
+    position: relative;
+  }
+  .pf-cartao .pf-corpo p {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------
+   Processo — coluna presa + etapas
+   ------------------------------------------------------------ */
+
+.mt {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(40px, 6vw, 100px);
+  align-items: start;
+}
+.mt-fixo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+}
+.mt-fixo h2 {
+  max-width: 12ch;
+}
+.mt-relogio {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--display);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.mt-relogio b {
+  font-size: clamp(58px, 7vw, 104px);
+  color: var(--nude-escuro);
+  font-variant-numeric: tabular-nums;
+}
+.mt-relogio i {
+  font-style: normal;
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sobre-claro-tenue);
+}
+
+.mt-etapas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 2.4vw, 32px);
+}
+.mt-etapa {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(150px, 20vw, 260px);
+  gap: clamp(20px, 3vw, 44px);
+  align-items: center;
+  padding: clamp(24px, 3vw, 40px);
+  border-radius: var(--r);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(26, 16, 12, 0.1);
+  transition:
+    border-color 0.6s var(--ease),
+    background 0.6s var(--ease);
+}
+.mt-etapa:hover {
+  border-color: rgba(26, 16, 12, 0.26);
+  background: #fff;
+}
+.mt-etapa-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.mt-etapa .mt-n {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--nude-escuro);
+}
+.mt-etapa h3 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(24px, 2.4vw, 38px);
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  margin: 0;
+}
+.mt-etapa p {
+  margin: 0;
+  font-size: 16.5px;
+  line-height: 1.55;
+  color: var(--sobre-claro-fraco);
+  max-width: 46ch;
+}
+.mt-etapa-foto {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--areia-2);
+  margin: 0;
+}
+/* Sem hover de escala aqui: o paralaxe já escreve `transform` nesta
+   imagem, e as duas coisas brigariam pela mesma propriedade. */
+.mt-etapa-foto img {
+  object-fit: cover;
+}
+
+@media (max-width: 1080px) {
+  .mt,
+  .mt-etapa {
+    grid-template-columns: 1fr;
+  }
+  .mt-etapa-foto {
+    aspect-ratio: 16 / 9;
+    order: -1;
+  }
+}
+
+/* ------------------------------------------------------------
+   Procedimentos — grade densa
+   ------------------------------------------------------------ */
+
+.md-cabeca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: clamp(40px, 5vw, 70px);
+}
+.md-cabeca h2 {
+  max-width: 15ch;
+}
+
+.md-grade {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-flow: dense;
+  gap: 14px;
+}
+
+.md-cartao {
+  position: relative;
+  grid-column: span 4;
+  min-height: clamp(360px, 42vw, 520px);
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 1px solid var(--linha);
+  display: flex;
+  align-items: flex-end;
+  isolation: isolate;
+}
+.md-cartao img {
+  object-fit: cover;
+  opacity: 0.66;
+  transition:
+    transform 1.3s var(--ease),
+    opacity 0.7s var(--ease);
+}
+.md-cartao:hover img {
+  transform: scale(1.07);
+  opacity: 0.82;
+}
+.md-cartao::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(23, 15, 13, 0.1) 30%, rgba(23, 15, 13, 0.9));
+}
+.md-corpo {
+  position: relative;
+  z-index: 2;
+  padding: clamp(22px, 2.4vw, 34px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.md-corpo h3 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(24px, 2.2vw, 34px);
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  margin: 0;
+}
+.md-corpo p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--sobre-escuro-fraco);
+  max-width: 34ch;
+}
+
+/* O painel dos cuidados fecha a grade. Ele existe porque sem ele a
+   última linha ficava com uma célula vazia — e um buraco numa grade
+   densa é o defeito que mais denuncia página montada às pressas. */
+.md-cuidados {
+  grid-column: span 6;
+  border-radius: var(--r);
+  border: 1px solid var(--linha);
+  background: linear-gradient(150deg, var(--terra), var(--cacau) 78%);
+  padding: clamp(24px, 2.6vw, 40px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.md-cuidados h3 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(22px, 2vw, 30px);
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+.md-regras {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 26px;
+}
+.md-regras li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--linha);
+  font-size: 15.5px;
+}
+.md-regras li span {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-tenue);
+  white-space: nowrap;
+}
+
+.md-painel {
+  grid-column: span 6;
+  border-radius: var(--r);
+  border: 1px solid var(--linha);
+  padding: clamp(24px, 2.6vw, 40px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 26px;
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(201, 138, 103, 0.18), transparent 62%),
+    var(--cacau-2);
+}
+.md-painel h3 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(24px, 2.6vw, 40px);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 0;
+  max-width: 16ch;
+}
+.md-painel p {
+  margin: 0;
+  color: var(--sobre-escuro-fraco);
+  max-width: 44ch;
+}
+.md-selos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.md-selo {
+  padding: 9px 16px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--linha-forte);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-fraco);
+}
+
+@media (max-width: 1080px) {
+  .md-cartao {
+    grid-column: span 6;
+  }
+  /* Três cartões em duas colunas deixam um buraco na segunda linha:
+     o último ocupa a linha inteira. */
+  .md-cartao:last-of-type {
+    grid-column: span 12;
+    min-height: clamp(300px, 40vw, 420px);
+  }
+  .md-cuidados,
+  .md-painel {
+    grid-column: span 12;
+  }
+}
+@media (max-width: 700px) {
+  .md-cartao {
+    grid-column: span 12;
+    min-height: 340px;
+  }
+  .md-regras {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ------------------------------------------------------------
+   Avaliação
+   ------------------------------------------------------------ */
+
+.av {
+  position: relative;
+  overflow: hidden;
+}
+.av-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(40px, 6vw, 96px);
+  align-items: center;
+}
+.av-texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+}
+.av-texto h2 {
+  max-width: 13ch;
+}
+.av-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.av-lista li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(26, 16, 12, 0.12);
+  font-size: 16.5px;
+  line-height: 1.45;
+}
+.av-lista li:first-child {
+  border-top: 1px solid rgba(26, 16, 12, 0.12);
+}
+.av-lista svg {
+  width: 19px;
+  height: 12px;
+  flex: none;
+  margin-top: 7px;
+  color: var(--nude-escuro);
+}
+.av-selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 18px;
+  border-radius: var(--r-pill);
+  background: rgba(154, 83, 51, 0.1);
+  border: 1px solid rgba(154, 83, 51, 0.3);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--nude-escuro);
+}
+
+.av-foto {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--areia-2);
+  margin: 0;
+}
+.av-foto img {
+  object-fit: cover;
+  will-change: transform;
+}
+
+@media (max-width: 980px) {
+  .av-grade {
+    grid-template-columns: 1fr;
+  }
+  .av-foto {
+    aspect-ratio: 16 / 11;
+  }
+}
+
+/* ------------------------------------------------------------
+   Depoimentos
+   ------------------------------------------------------------ */
+
+.dp-cabeca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 26px;
+  margin-bottom: clamp(40px, 5vw, 70px);
+}
+.dp-nota {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-tenue);
+  max-width: 30ch;
+}
+.dp-nota svg {
+  width: 19px;
+  height: 12px;
+  flex: none;
+  color: var(--nude);
+}
+.dp-nota b {
+  font-family: var(--display);
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--nude);
+}
+
+.dp-grade {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.dp-cartao {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: clamp(26px, 2.6vw, 40px);
+  border-radius: var(--r);
+  border: 1px solid var(--linha);
+  background: linear-gradient(170deg, rgba(58, 35, 28, 0.6), rgba(23, 15, 13, 0.2));
+  transition:
+    transform 0.7s var(--ease),
+    border-color 0.5s var(--ease);
+}
+.dp-cartao:hover {
+  transform: translateY(-6px);
+  border-color: var(--linha-forte);
+}
+.dp-cartao p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--sobre-escuro-fraco);
+}
+.dp-quem {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-top: auto;
+}
+/* A regra genérica `.dp-quem span` é mais específica que `.dp-avatar`
+   e imporia `display: block` no círculo, jogando as iniciais para
+   fora dele. Aqui o display volta a ser grade. */
+.dp-quem .dp-avatar {
+  display: grid;
+  place-items: center;
+  color: #1a100c;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+.dp-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--nude);
+  color: #1a100c;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+/* O nome é texto de leitura, não etiqueta: a regra de span acima
+   passaria a monoespaçada e a caixa alta para dentro do <b>. */
+.dp-quem b {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--sobre-escuro);
+}
+.dp-quem span {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-tenue);
+}
+
+@media (max-width: 980px) {
+  .dp-grade {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ------------------------------------------------------------
+   Chamada final + rodapé
+   ------------------------------------------------------------ */
+
+.cta {
+  position: relative;
+  overflow: hidden;
+  background: var(--nude);
+  color: #1a100c;
+  padding: clamp(90px, 12vw, 170px) var(--pad);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+.cta h2 {
+  font-size: clamp(40px, 7vw, 116px);
+  max-width: 16ch;
+  color: #1a100c;
+}
+.cta p {
+  margin: 0;
+  font-size: clamp(17px, 1.4vw, 21px);
+  color: rgba(26, 16, 12, 0.74);
+  max-width: 48ch;
+}
+.cta .btn-escuro {
+  background: #1a100c;
+  border-color: #1a100c;
+}
+.cta-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+}
+.cta .btn-vazado {
+  color: #1a100c;
+  border-color: rgba(26, 16, 12, 0.32);
+}
+.cta .btn-vazado:hover {
+  background: rgba(26, 16, 12, 0.08);
+  border-color: #1a100c;
+  color: #1a100c;
+}
+
+/* O símbolo gigante meio cortado pela borda de baixo. Fecha a página
+   com a mesma forma que a abriu. */
+.cta-marca {
+  position: absolute;
+  right: -6%;
+  bottom: -16%;
+  width: min(52vw, 620px);
+  color: #1a100c;
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+.rodape {
+  padding: clamp(60px, 7vw, 96px) var(--pad) 40px;
+  background: var(--cacau);
+  border-top: 1px solid var(--linha);
+}
+.rd-grade {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: clamp(30px, 4vw, 60px);
+}
+.rd-marca {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+.rd-marca .rd-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 25px;
+  letter-spacing: -0.03em;
+}
+.rd-marca .rd-logo svg {
+  width: 27px;
+  height: 17px;
+  color: var(--nude);
+}
+.rd-marca .rd-logo i {
+  font-style: italic;
+  font-weight: 400;
+  opacity: 0.72;
+}
+.rd-marca p {
+  margin: 0;
+  color: var(--sobre-escuro-tenue);
+  max-width: 34ch;
+  font-size: 15.5px;
+}
+.rd-col h3 {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-tenue);
+  margin: 0 0 16px;
+}
+.rd-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rd-col a,
+.rd-col li {
+  font-size: 15.5px;
+  color: var(--sobre-escuro-fraco);
+  transition: color 0.3s ease;
+}
+/* O ícone e o texto são uma coisa só: como `inline`, o ícone contaria
+   como palavra e o texto cairia para a linha de baixo. */
+.rd-mapa {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.rd-col a:hover {
+  color: var(--nude);
+}
+
+.rd-fim {
+  margin-top: clamp(40px, 5vw, 70px);
+  padding-top: 22px;
+  border-top: 1px solid var(--linha);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 30px;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-tenue);
+}
+
+@media (max-width: 900px) {
+  .rd-grade {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .rd-grade {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ------------------------------------------------------------
+   Abertura — a cortina
+   ------------------------------------------------------------ */
+
+.abertura {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 22px;
+  background: var(--cacau);
+}
+.abertura svg {
+  width: clamp(78px, 10vw, 132px);
+  color: var(--nude);
+}
+.ab-nome {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-tenue);
+}
+.abertura-barra {
+  position: absolute;
+  left: 50%;
+  bottom: 16%;
+  transform: translateX(-50%);
+  width: min(220px, 40vw);
+  height: 1px;
+  background: var(--linha);
+  overflow: hidden;
+}
+.abertura-barra i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--nude);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* ------------------------------------------------------------
+   Movimento reduzido: a página inteira continua legível parada.
+   ------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .abertura,
+  .trilha {
+    display: none;
+  }
+}
+
+/* ============================================================
+   Telas pequenas.
+
+   O que muda aqui não é "o mesmo layout menor": muda a ordem do que
+   aparece primeiro, o tamanho de quem toca com o dedo e a quantidade
+   de enfeite.
+   ============================================================ */
+
+@media (max-width: 1080px) {
+  :root {
+    --pad: max(clamp(18px, 5vw, 34px), env(safe-area-inset-left));
+  }
+
+  /* A barra fica mais opaca: no celular ela cruza fotos claras e
+     títulos grandes, e o vidro translúcido não separa mais nada. */
+  .nav-marca,
+  .nav-menu-botao {
+    background: rgba(23, 15, 13, 0.88);
+  }
+
+  .he {
+    min-height: auto;
+    padding-top: 118px;
+    padding-bottom: 64px;
+    gap: 40px;
+  }
+  .he-texto {
+    gap: 18px;
+  }
+  .he-rotulo {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+  .he-h1 {
+    font-size: clamp(34px, 10.5vw, 60px);
+  }
+  .he-sub {
+    font-size: 16.5px;
+  }
+  /* Os dois botões ocupam a linha inteira: alvo de dedo não é alvo de
+     ponteiro, e meia linha de largura erra o toque. */
+  .he-acoes {
+    width: 100%;
+    gap: 10px;
+  }
+  .he-acoes .btn {
+    padding: 17px 24px;
+  }
+  .he-fatos {
+    flex-direction: column;
+    gap: 9px;
+  }
+  .he-cena {
+    min-height: 0;
+  }
+  .he-retrato,
+  .he-eco {
+    width: min(80%, 340px);
+  }
+
+  .cm-titulo {
+    gap: 16px;
+    padding: 26px 8px;
+  }
+  .cm-h2 {
+    font-size: clamp(34px, 11vw, 60px);
+    max-width: 12ch;
+  }
+  .cm-sub {
+    font-size: 16px;
+  }
+
+  .mt-fixo {
+    gap: 18px;
+  }
+  .mt-relogio b {
+    font-size: clamp(48px, 15vw, 80px);
+  }
+
+  .dp-cartao p {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 760px) {
+  .secao {
+    padding: clamp(64px, 13vw, 92px) var(--pad);
+  }
+
+  /* Botão que ocupa a linha em qualquer seção: no celular todos os
+     botões da página são o mesmo gesto — o polegar na largura toda. */
+  .secao .btn,
+  .cta .btn,
+  .he-acoes .btn {
+    width: 100%;
+    flex: 1 1 100%;
+    justify-content: center;
+    padding: 17px 24px;
+  }
+  .cta-acoes {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .pf-cabeca,
+  .md-cabeca,
+  .dp-cabeca {
+    gap: 18px;
+    margin-bottom: 32px;
+  }
+  .pf-cabeca .lead,
+  .md-cabeca .lead {
+    max-width: none;
+  }
+
+  .md-grade {
+    gap: 10px;
+  }
+  .md-corpo,
+  .pf-corpo {
+    padding: 20px;
+  }
+
+  .st-num {
+    padding: 22px 16px;
+  }
+  .st-num b {
+    font-size: clamp(38px, 13vw, 56px);
+  }
+
+  .av-lista li {
+    font-size: 16px;
+  }
+
+  .rd-fim {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  .pf-lista {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 16px;
+  }
+  .secao-titulo {
+    font-size: clamp(30px, 9.5vw, 40px);
+  }
+  .lead {
+    font-size: 16px;
+  }
+
+  /* Um número por linha. Em duas colunas de 150px o rótulo de três
+     linhas fica mais alto que o próprio número. */
+  .st-numeros {
+    grid-template-columns: 1fr;
+  }
+  .st-num span {
+    max-width: none;
+  }
+
+  .md-cartao {
+    min-height: 300px;
+  }
+  .pf-cartao {
+    min-height: 220px;
+  }
+
+  .tarja-topo {
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+  }
+
+  .rd-grade {
+    gap: 30px;
+  }
 }

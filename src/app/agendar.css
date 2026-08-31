@@ -1,0 +1,534 @@
+/* ============================================================
+   Agendamento (/agendar)
+
+   Tela de tarefa, não de vitrine: fundo escuro liso, um cartão só,
+   e nenhuma animação de entrada. Quem chega aqui já decidiu — o
+   trabalho da página é não atrapalhar.
+
+   Mora em arquivo separado porque não tem nada a ver com a landing:
+   quem mexer no fluxo de marcação não precisa rolar 2.000 linhas de
+   herói e paralaxe para achar um botão.
+   ============================================================ */
+
+.ag {
+  min-height: 100svh;
+  padding: clamp(24px, 5vw, 64px) var(--pad) clamp(48px, 7vw, 90px);
+  background:
+    radial-gradient(90% 60% at 50% 0%, rgba(201, 138, 103, 0.16), transparent 68%),
+    var(--cacau);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.ag-caixa {
+  width: 100%;
+  max-width: 760px;
+  border-radius: var(--r);
+  border: 1px solid var(--linha);
+  background: linear-gradient(170deg, rgba(58, 35, 28, 0.5), rgba(23, 15, 13, 0.6));
+  padding: clamp(22px, 3.4vw, 44px);
+  scroll-margin-top: 20px;
+}
+
+.ag-cabeca {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: clamp(20px, 3vw, 34px);
+}
+.ag-voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-tenue);
+  transition: color 0.3s ease;
+}
+.ag-voltar:hover {
+  color: var(--nude);
+}
+.ag-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--display);
+  font-size: 19px;
+  letter-spacing: -0.02em;
+}
+.ag-marca svg {
+  width: 20px;
+  height: 12px;
+  color: var(--nude);
+}
+.ag-marca i {
+  font-style: italic;
+  opacity: 0.72;
+}
+
+.ag-titulo {
+  font-size: clamp(34px, 5vw, 54px);
+  margin-bottom: clamp(18px, 2.4vw, 28px);
+}
+
+/* ---- a trilha de passos ---- */
+
+.ag-passos {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 clamp(24px, 3.4vw, 38px);
+  padding: 0;
+}
+.ag-passos button {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 15px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--linha);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-tenue);
+  transition:
+    color 0.3s ease,
+    border-color 0.3s ease,
+    background 0.3s ease;
+}
+.ag-passos button b {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--linha);
+  color: var(--sobre-escuro);
+  font-weight: 500;
+}
+.ag-passos button[data-estado='agora'] {
+  color: #1a100c;
+  background: var(--nude);
+  border-color: var(--nude);
+}
+.ag-passos button[data-estado='agora'] b {
+  background: rgba(26, 16, 12, 0.22);
+  color: #1a100c;
+}
+.ag-passos button[data-estado='feito'] {
+  color: var(--nude);
+  border-color: rgba(201, 138, 103, 0.42);
+}
+.ag-passos button[data-estado='feito'] b {
+  background: rgba(201, 138, 103, 0.2);
+  color: var(--nude);
+}
+.ag-passos button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.ag-etapa {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.ag-h2 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(21px, 2.2vw, 28px);
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ag-h2 span {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--nude);
+}
+
+.ag-nota,
+.ag-vazio {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-tenue);
+}
+.ag-vazio {
+  padding: 22px;
+  border-radius: var(--r-sm);
+  border: 1px dashed var(--linha-forte);
+  text-align: center;
+}
+
+/* ---- serviços ---- */
+
+.ag-servicos {
+  display: grid;
+  gap: 10px;
+}
+.ag-servico {
+  display: grid;
+  gap: 6px;
+  text-align: left;
+  padding: 18px 20px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--linha);
+  background: rgba(23, 15, 13, 0.4);
+  cursor: pointer;
+  transition:
+    border-color 0.4s var(--ease),
+    background 0.4s var(--ease),
+    transform 0.4s var(--spring);
+}
+.ag-servico:hover {
+  transform: translateY(-2px);
+  border-color: var(--linha-forte);
+  background: rgba(58, 35, 28, 0.5);
+}
+.ag-servico[data-ativo='1'] {
+  border-color: var(--nude);
+}
+.ag-servico-nome {
+  font-family: var(--display);
+  font-size: 21px;
+  letter-spacing: -0.02em;
+}
+.ag-servico-txt {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--sobre-escuro-fraco);
+}
+.ag-servico-meta {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nude);
+}
+
+/* ---- calendário ---- */
+
+.cal {
+  display: grid;
+  gap: 12px;
+}
+.cal-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.cal-topo strong {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+  text-transform: capitalize;
+}
+.cal-seta {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--linha);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+.cal-seta:hover:not(:disabled) {
+  border-color: var(--nude);
+  color: var(--nude);
+}
+.cal-seta:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.cal-seta svg {
+  width: 18px;
+  height: 18px;
+}
+
+.cal-semana,
+.cal-grade {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+.cal-semana span {
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-tenue);
+}
+.cal-dia {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--linha);
+  background: rgba(23, 15, 13, 0.4);
+  font-size: 15px;
+  cursor: pointer;
+  transition:
+    border-color 0.3s ease,
+    background 0.3s ease,
+    color 0.3s ease;
+}
+.cal-dia:hover:not(:disabled) {
+  border-color: var(--nude);
+  color: var(--nude);
+}
+.cal-dia[data-livre='0'] {
+  opacity: 0.28;
+  cursor: default;
+  border-color: transparent;
+  background: transparent;
+}
+/* O dia de hoje é marcado por um ponto, não por moldura: moldura
+   competiria com a do dia escolhido. */
+.cal-dia[data-hoje='1'] {
+  position: relative;
+}
+.cal-dia[data-hoje='1']::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--nude);
+}
+.cal-dia[data-ativo='1'] {
+  background: var(--nude);
+  border-color: var(--nude);
+  color: #1a100c;
+  font-weight: 600;
+}
+.cal-dia[data-ativo='1']::after {
+  background: rgba(26, 16, 12, 0.5);
+}
+.cal-vazio {
+  border: none;
+  background: none;
+}
+.cal-nota {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-tenue);
+}
+
+/* ---- horários ---- */
+
+.ag-horas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 8px;
+}
+.ag-hora {
+  padding: 14px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--linha);
+  background: rgba(23, 15, 13, 0.4);
+  font-family: var(--mono);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease,
+    background 0.3s ease;
+}
+.ag-hora:hover:not(:disabled) {
+  border-color: var(--nude);
+  color: var(--nude);
+}
+.ag-hora:disabled {
+  opacity: 0.26;
+  cursor: default;
+  text-decoration: line-through;
+}
+.ag-hora[data-ativo='1'] {
+  background: var(--nude);
+  border-color: var(--nude);
+  color: #1a100c;
+}
+
+/* ---- resumo e formulário ---- */
+
+.ag-resumo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--linha);
+  border: 1px solid var(--linha);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+.ag-resumo span {
+  display: grid;
+  gap: 4px;
+  padding: 16px 18px;
+  background: rgba(23, 15, 13, 0.72);
+  font-size: 15.5px;
+}
+.ag-resumo i {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-tenue);
+}
+
+.ag-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.ag-campo {
+  display: grid;
+  gap: 8px;
+}
+.ag-campo-largo {
+  grid-column: span 2;
+}
+.ag-campo span {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sobre-escuro-tenue);
+}
+.ag-campo input,
+.ag-campo textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--linha);
+  background: rgba(23, 15, 13, 0.55);
+  color: var(--sobre-escuro);
+  font: inherit;
+  /* 16px de propósito: abaixo disso o iPhone dá zoom sozinho ao focar
+     o campo, e a tela toda pula. */
+  font-size: 16px;
+  resize: vertical;
+  transition: border-color 0.3s ease;
+}
+.ag-campo input:focus,
+.ag-campo textarea:focus {
+  outline: none;
+  border-color: var(--nude);
+}
+.ag-campo input::placeholder,
+.ag-campo textarea::placeholder {
+  color: var(--sobre-escuro-tenue);
+}
+
+.ag-erro {
+  grid-column: span 2;
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: var(--r-sm);
+  border: 1px solid rgba(201, 138, 103, 0.5);
+  background: rgba(201, 138, 103, 0.12);
+  font-size: 15px;
+  color: var(--nude-alto);
+}
+.ag-enviar {
+  grid-column: span 2;
+  justify-content: center;
+}
+
+/* ---- confirmação ---- */
+
+.ag-pronto {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+}
+.ag-check {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--nude);
+  color: #1a100c;
+}
+.ag-check svg {
+  width: 26px;
+  height: 26px;
+}
+.ag-sub {
+  margin: 0;
+  font-size: 17px;
+  color: var(--sobre-escuro-fraco);
+}
+.ag-sub b {
+  font-family: var(--mono);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--nude);
+}
+.ag-aviso {
+  margin: 0;
+  padding: 16px 18px;
+  border-radius: var(--r-sm);
+  border: 1px dashed var(--linha-forte);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--sobre-escuro-fraco);
+}
+.ag-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 620px) {
+  .ag-resumo,
+  .ag-form {
+    grid-template-columns: 1fr;
+  }
+  .ag-campo-largo,
+  .ag-erro,
+  .ag-enviar {
+    grid-column: span 1;
+  }
+  .ag-horas {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
+  .ag-acoes .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .cal-semana,
+  .cal-grade {
+    gap: 4px;
+  }
+}
